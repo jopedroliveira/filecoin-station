@@ -7,6 +7,7 @@ import Sentry from './components/Sentry'
 import Plausible from './components/Plausible'
 import { HelmetProvider, Helmet } from 'react-helmet-async'
 import Saturn from './components/Saturn'
+import Splash from './pages/Splash'
 
 const App = ():JSX.Element => {
   return (
@@ -17,7 +18,7 @@ const App = ():JSX.Element => {
       <Saturn />
       <Router>
         <Routes>
-          <Route path="/" element={<Onboarding />} />
+          <Route path="/" element={<Splash />} />
           <Route path="*" element={
             <>
               <Sentry />
