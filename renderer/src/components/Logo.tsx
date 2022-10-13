@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSpring, animated, Spring } from 'react-spring'
+import { useSpring, animated, useTransition } from 'react-spring'
 
 const TopBox = () => {
   return (
@@ -38,17 +38,34 @@ const Logo = () => {
     setInterval(() => setToggle(true), 200)
   })
 
-  const springUp = useSpring({ transform: toggle ? 'translate3d(0px, 0xp, 0px)' : 'translate3d(0px, 31px, 0px)' })
-  const springDown = useSpring({ transform: toggle ? 'translate3d(0px, 0px, 0px)' : 'translate3d(0px, -31px, 0px)'})
-
+  const springUp = useSpring({ transform: toggle ? 'translate3d(0px, 0xp, 0px)' : 'translate3d(0px, 31px, 0px)', config: { duration: 300 } })
+  const springDown = useSpring({ transform: toggle ? 'translate3d(0px, 0px, 0px)' : 'translate3d(0px, -31px, 0px)', config: { duration: 300 } })
+  const springLeft = useSpring({ transform: toggle ? 'translate3d(0px, 0xp, 0px)' : 'translate3d(247.58px, 0px, 0px)', delay: 1000, config: { duration: 300 } })
+  const transitions = useTransition(toggle, {
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    delay: 1000,
+    config: { duration: 500 }
+  })
   return (
-    <svg width="720" height="350" viewBox="0 0 720 350" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <animated.g style={springUp}><TopBox /></animated.g>
-      <animated.g style={springDown}><BottomBox /></animated.g>
-      <Spring from={{ opacity: 0 }} to={{ opacity: 1 }}>
-        <StationText />
-      </Spring>
-    </svg>
+    <>
+      <svg width="720" height="350" viewBox="0 0 720 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <animated.g style={springUp}><animated.g style={springLeft}><TopBox /></animated.g></animated.g>
+        <animated.g style={springDown}><animated.g style={springLeft}><BottomBox /></animated.g></animated.g>
+        {transitions(({ opacity }, item) => (
+          <animated.g style={springLeft}>
+            <animated.g
+              style={{
+                opacity: opacity.to({ range: [0.0, 1.0], output: [0, 1] })
+              }}>
+              <StationText />
+            </animated.g>
+          </animated.g>
+        )
+        )}
+
+      </svg>
+    </>
   )
 }
 
