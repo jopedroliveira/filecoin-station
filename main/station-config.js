@@ -10,6 +10,8 @@ const ConfigKeys = {
   FilAddress: 'station.FilAddress'
 }
 
+/** @typedef {import('./typings').FILTransaction} TransactionMessage */
+
 // Use this to test migrations
 // https://github.com/sindresorhus/electron-store/issues/205
 // require('electron').app.setVersion('9999.9.9')
@@ -40,14 +42,14 @@ const StationID = /** @type {string} */ (configStore.get(ConfigKeys.StationID, r
 /**
  * @returns {boolean}
  */
-function getOnboardingCompleted () {
+function getOnboardingCompleted() {
   return !!OnboardingCompleted
 }
 
 /**
  *
  */
-function setOnboardingCompleted () {
+function setOnboardingCompleted() {
   OnboardingCompleted = true
   configStore.set(ConfigKeys.OnboardingCompleted, OnboardingCompleted)
 }
@@ -55,14 +57,14 @@ function setOnboardingCompleted () {
 /**
  * @returns {boolean}
  */
-function getTrayOperationExplained () {
+function getTrayOperationExplained() {
   return !!TrayOperationExplained
 }
 
 /**
  *
  */
-function setTrayOperationExplained () {
+function setTrayOperationExplained() {
   TrayOperationExplained = true
   configStore.set(ConfigKeys.TrayOperationExplained, TrayOperationExplained)
 }
@@ -70,23 +72,63 @@ function setTrayOperationExplained () {
 /**
  * @returns {string | undefined}
  */
-function getFilAddress () {
+function getFilAddress() {
+  // return FilAddress
+  return 'f1mvpmuyawhjtuq5kntxvhiwfrmdr5iseaxtai7zq'
+}
+
+/**
+ * @returns {string}
+ */
+function getStationID() {
+  return StationID
+}
+
+/**
+ * @returns {string}
+ */
+function getStationWalletAddress() {
+  // todo: backend logic
+  return 'f1mvpmuyawhjtuq5kntxvhiwfrmdr5iseaxtai7zq'
+}
+
+/**
+ * @returns {string | undefined}
+ */
+function getDestinationWalletAddress() {
+  // todo: backend logic
   return FilAddress
 }
 
 /**
  * @param {string | undefined} address
  */
-function setFilAddress (address) {
+function setDestinationWalletAddress(address) {
   FilAddress = address
   configStore.set(ConfigKeys.FilAddress, address)
 }
 
 /**
- * @returns {string}
+ * @returns {number}
  */
-function getStationID () {
-  return StationID
+function getStationWalletBalance() {
+  // todo: backend logic
+  return 3123.123
+}
+
+/**
+ * @returns { TransactionMessage[] }
+ */
+function getStationWalletTransactionsHistory() {
+  // todo backend logic
+  return []
+}
+
+/**
+ * @returns void
+ */
+function trasnferAllFundsToDestinationWallet() {
+  return {}
 }
 
 module.exports = {
@@ -95,6 +137,11 @@ module.exports = {
   getTrayOperationExplained,
   setTrayOperationExplained,
   getFilAddress,
-  setFilAddress,
-  getStationID
+  getStationID,
+  getStationWalletAddress,
+  getDestinationWalletAddress,
+  setDestinationWalletAddress,
+  getStationWalletBalance,
+  getStationWalletTransactionsHistory,
+  trasnferAllFundsToDestinationWallet
 }
