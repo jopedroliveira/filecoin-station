@@ -70,7 +70,7 @@
     "@types/tar-fs": "^2.0.1",
     "@types/tmp": "^0.2.3",
     "@types/unzip-stream": "^0.3.1",
-    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/experimental-utils": "^5.41.0",
     "@typescript-eslint/parser": "^5.39.0",
     "@vitejs/plugin-react": "^2.1.0",
