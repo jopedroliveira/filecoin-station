@@ -11,6 +11,7 @@ import WalletIcon from '../assets/img/wallet.svg'
 import { useNavigate } from 'react-router-dom'
 import { confirmChangeWalletAddress } from '../lib/dialogs'
 import UpdateBanner from '../components/UpdateBanner'
+import Wallet from '../components/Wallet'
 
 const Dashboard = (): JSX.Element => {
   const navigate = useNavigate()
@@ -19,15 +20,18 @@ const Dashboard = (): JSX.Element => {
   const [totalJobs, setTotalJobs] = useState<number>(0)
   const [totalEarnings, setTotalEarnigs] = useState<number>(0)
   const [activities, setActivities] = useState<ActivityEventMessage[]>([])
+  const [walletCurtainIsOpen, setWalletCurtainIsOpen] = useState<boolean>(false)
+
   const shortAddress = (str: string) => str
     ? str.substring(0, 4) + '...' + str.substring(str.length - 4, str.length)
     : ''
   const disconnect = async () => {
-    if (!(await confirmChangeWalletAddress())) return
-    await stopSaturnNode()
-    await setFilAddress('')
-    setAddress(undefined)
-    navigate('/wallet', { replace: true })
+    // if (!(await confirmChangeWalletAddress())) return
+    // await stopSaturnNode()
+    // await setFilAddress('')
+    // setAddress(undefined)
+    // navigate('/wallet', { replace: true })
+    setWalletCurtainIsOpen(!walletCurtainIsOpen)
   }
 
   useEffect(() => {
@@ -55,6 +59,7 @@ const Dashboard = (): JSX.Element => {
   return (
     <div className="h-screen w-screen overflow-hidden bg-grayscale-100">
       <UpdateBanner />
+      <Wallet isOpen={walletCurtainIsOpen} setIsOpen={setWalletCurtainIsOpen}/>
       <div className="relative">
         <div className="max-w-[744px] mx-auto">
           <div className="absolute left-0 z-0 top-0 w-full h-[300px]"
@@ -66,7 +71,7 @@ const Dashboard = (): JSX.Element => {
               maskImage: 'linear-gradient(black, transparent)'
             }}>
           </div>
-          <div className="h-[300px] flex flex-col relative z-10">
+          <div className="h-[300px] flex flex-col relative z-20">
             <div className="flex-grow flex pt-4 justify-end justify-items-end">
               <div>
                 <button type="button" className="flex items-center cursor-pointer" title="logout" onClick={disconnect}>
