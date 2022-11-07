@@ -16,6 +16,11 @@
     font-family: "SpaceMono";
     src: url('assets/fonts/SpaceMono/SpaceMono-Regular.ttf');
   }
+  @font-face {
+    font-family: "SpaceMono";
+    font-weight: 700;
+    src: url('assets/fonts/SpaceMono/SpaceMono-Bold.ttf');
+  }
 
   .title {
     @apply text-header-l font-title text-primary leading-[1.25] tracking-[-0.4px];
@@ -26,7 +31,7 @@
   }
 
   body {
-    @apply font-body text-black tracking-[-0.4px];
+    @apply font-body text-black tracking-[-0.4px] overflow-x-hidden;
     -webkit-user-select: none;
     -webkit-app-region: drag;
   }
@@ -45,14 +50,21 @@
 
 @layer components {
   .input {
-    @apply text-body-l font-body pt-3 pb-2 px-0 mt-0 border-dashed border-0 border-b 
-    bg-transparent appearance-none focus:outline-none focus:ring-0 focus:border-black border-grayscale-700;
+    @apply text-header-3xs font-body pt-3 pb-2 px-0 mt-0 border-dashed border-0 border-b text-white
+    bg-transparent appearance-none focus:outline-none focus:ring-0 focus:border-white border-white;
   }
 
   .btn-primary {
-    @apply py-2 px-4 rounded-full font-body text-body-m  text-white
+    @apply py-2 px-4 h-12 rounded-full font-body text-body-s w-fit text-white
      bg-primary hover:bg-primary-hover visited:bg-primary-click
      disabled:bg-grayscale-500 disabled:text-white
+  }
+
+  .btn-primary-white {
+    @apply py-2 px-4 h-12 rounded-full font-body text-body-s w-fit text-primary
+     bg-white hover:bg-opacity-90 visited:bg-opacity-95
+     disabled:bg-transparent disabled:text-white 
+     disabled:opacity-60 disabled:outline disabled:outline-1 disabled:outline-white
   }
 
   .btn-primary-small {
@@ -68,6 +80,10 @@
   .icon-primary path {
     @apply fill-primary group-hover:fill-primary-hover group-visited:fill-primary-click
     group-disabled:fill-grayscale-500
+  }
+
+  .icon-primary-white path {
+    @apply fill-white
   }
 
   .icon-warning path {
@@ -140,7 +156,7 @@
     transform: rotate(-180deg);
   }
 
-  input:focus ~ label,
+  /* input:focus ~ label,
   input:not(:placeholder-shown) ~ label{
     --tw-translate-x: 0;
     --tw-translate-y: 0;
@@ -152,6 +168,6 @@
     --tw-scale-x: 0.75;
     --tw-scale-y: 0.75;
     --tw-translate-y: -1.5rem;
-  }
+  } */
 
 }

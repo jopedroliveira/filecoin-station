@@ -1,27 +1,82 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
+import HeaderBackgroundImage from '../assets/img/header-curtain.png'
+import { ReactComponent as InfoIcon } from '../assets/img/info.svg'
+import FilAddressDisplay from './FilAddressDisplay'
+import FilAddressForm from './FilAddressForm'
+import { getFilAddress, setFilAddress as saveFilAddress } from '../lib/station-config'
 
 interface PropsWallet {
   isOpen: boolean,
-  setIsOpen: (state: boolean) => void
+  setIsOpen: (state: boolean) => void,
+  totalFIL: number | undefined
 }
 
-const Wallet: FC<PropsWallet> = ({ isOpen = false, setIsOpen }) => {
+const Wallet: FC<PropsWallet> = ({ isOpen = false, setIsOpen, totalFIL = 0 }) => {
+  const [userAddress, setUserAddress] = useState<string | undefined>()
+  const [editMode, setEditMode] = useState<boolean>(false)
+  const [trasnferMode, setTransferMode] = useState<boolean>(false)
+
+  useEffect(() => {
+    const loadStoredInfo = async () => {
+      setUserAddress(await getFilAddress())
+    }
+    loadStoredInfo()
+  }, [userAddress])
+
+  const saveUserAddress = async (address: string) => {
+    await saveFilAddress(address)
+    setUserAddress(address)
+    setEditMode(false)
+  }
+
+  const closeCurtain = () => {
+    setIsOpen(false)
+    setEditMode(false)
+    setTransferMode(false)
+  }
+
   return (
     <>
-      <div className={`absolute h-full w-full bg-primary transition-all duration-[2000ms] ease-in-out ${isOpen ? 'z-30 opacity-20 visible' : 'opacity-0 z-[25] invisible'}`}
-        onClick={() => { setIsOpen(false) }} ></div>
-      <div className={`absolute z-30 h-full bg-grayscale-300 transition-all duration-[2000ms] w-1/2 ${isOpen ? 'right-0' : '-right-1/2'}`} >
+      <div className={`absolute h-full w-full bg-primary transition-all duration-[800ms] ease-in-out ${isOpen ? 'z-30 opacity-20 visible' : 'opacity-0 z-[25] invisible'}`}
+        onClick={closeCurtain} />
+      <div className={`absolute z-30  w-[733px] h-full bg-grayscale-300 transition-all duration-[800ms] ease-in-out ${isOpen ? 'right-0' : '-right-[733px]'}`} >
         <div className='relative'>
-          <div className='h-8 bg-primary-hover flex items-center px-8'>
-            <span className='text text-body-3xs text-white'>FILECOIN ADDRESS</span>
-            <span className='text text-body-2xs text-white mx-2'>f012342er</span>
+          <div className='h-8 bg-primary-hover flex items-center px-8' onClick={() => setEditMode(false)}>
+            <span className='text text-body-3xs text-white opacity-80 mr-3'>FILECOIN ADDRESS</span>
+            <span className='text text-body-3xs text-white'>f1443254jnkbvgye2343</span>
           </div>
-          <div className='bg-primary h-60'>
-            <div className="pointer-events-none absolute h-20 bg-grayscale-300 w-full z-10 bottom-0"
-              style={{
-                WebkitMaskImage: 'linear-gradient(transparent, #ededed80)',
-                maskImage: 'linear-gradient(transparent, #ededed80)'
-              }}>
+          <div className='h-60 bg-primary bg-no-repeat bg-center' style={{ backgroundImage: `url(${HeaderBackgroundImage})` }}>
+            <div className="py-6 px-8">
+              <div className="flex flex-row justify-between align-baseline" onClick={() => setEditMode(false)}>
+                <div>
+                  <p className="w-fit text-body-3xs text-white opacity-80 uppercase">Total FIL</p>
+                  <p className="w-fit text-header-m text-white font-bold font-number" title="total earnings">{totalFIL}<span className="text-header-3xs ml-3">FIL</span></p>
+                </div>
+                {!editMode
+                  ? trasnferMode
+                    ? <div className='relative flex gap-1 items-center'>
+                      <button className="btn-primary-white"><span className="text-2xs px-4 text-body-s">Send {totalFIL} FIL</span></button>
+                      <button className="btn-primary-white" onClick={() => { setTransferMode(false) }}><span className="text-2xs px-4 text-body-s">Cancel</span></button>
+                    </div>
+                    : <div className='relative flex items-center'>
+                      <button
+                        className="btn-primary-white"
+                        disabled={!userAddress}
+                        onClick={() => { setTransferMode(true) }}>
+                        <span className="text-2xs px-4 text-body-s">Transfer FIL</span>
+                      </button>
+                      {!userAddress &&
+                        <InfoIcon className="absolute center -ml-3.5 fill-[#C3CAD9]" width={'24px'} height={'24px'} />
+                      }
+                    </div>
+                  : ''}
+              </div>
+              <div className="flex flex-row justify-between align-baseline" onFocus={() => setEditMode(true)}>
+                {editMode || !userAddress
+                  ? <FilAddressForm userAddress={userAddress} saveUserAddress={saveUserAddress} />
+                  : <FilAddressDisplay userAddress={userAddress} setEditMode={() => { setEditMode(true); setTransferMode(false) }} />
+                }
+              </div>
             </div>
           </div>
         </div>

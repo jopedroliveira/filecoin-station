@@ -1,21 +1,16 @@
 import { useEffect, useState } from 'react'
 import {
-  getAllActivities, stopSaturnNode,
-  setFilAddress, getFilAddress,
+  getAllActivities, getFilAddress,
   getTotalEarnings, getTotalJobsCompleted
 } from '../lib/station-config'
 import { ActivityEventMessage } from '../typings'
 import ActivityLog from '../components/ActivityLog'
 import HeaderBackgroundImage from '../assets/img/header.png'
 import WalletIcon from '../assets/img/wallet.svg'
-import { useNavigate } from 'react-router-dom'
-import { confirmChangeWalletAddress } from '../lib/dialogs'
 import UpdateBanner from '../components/UpdateBanner'
 import Wallet from '../components/Wallet'
 
 const Dashboard = (): JSX.Element => {
-  const navigate = useNavigate()
-
   const [address, setAddress] = useState<string | undefined>()
   const [totalJobs, setTotalJobs] = useState<number>(0)
   const [totalEarnings, setTotalEarnigs] = useState<number>(0)
@@ -25,12 +20,7 @@ const Dashboard = (): JSX.Element => {
   const shortAddress = (str: string) => str
     ? str.substring(0, 4) + '...' + str.substring(str.length - 4, str.length)
     : ''
-  const disconnect = async () => {
-    // if (!(await confirmChangeWalletAddress())) return
-    // await stopSaturnNode()
-    // await setFilAddress('')
-    // setAddress(undefined)
-    // navigate('/wallet', { replace: true })
+  const openWalletMenu = async () => {
     setWalletCurtainIsOpen(!walletCurtainIsOpen)
   }
 
@@ -59,7 +49,7 @@ const Dashboard = (): JSX.Element => {
   return (
     <div className="h-screen w-screen overflow-hidden bg-grayscale-100">
       <UpdateBanner />
-      <Wallet isOpen={walletCurtainIsOpen} setIsOpen={setWalletCurtainIsOpen}/>
+      <Wallet totalFIL={333} isOpen={walletCurtainIsOpen} setIsOpen={setWalletCurtainIsOpen}/>
       <div className="relative">
         <div className="max-w-[744px] mx-auto">
           <div className="absolute left-0 z-0 top-0 w-full h-[300px]"
@@ -74,7 +64,7 @@ const Dashboard = (): JSX.Element => {
           <div className="h-[300px] flex flex-col relative z-20">
             <div className="flex-grow flex pt-4 justify-end justify-items-end">
               <div>
-                <button type="button" className="flex items-center cursor-pointer" title="logout" onClick={disconnect}>
+                <button type="button" className="flex items-center cursor-pointer" title="logout" onClick={openWalletMenu}>
                   <img src={WalletIcon} alt=""/>
                   <span className="text-right mx-3 fil-address" title="fil address">{address && shortAddress(address)}</span>
                   <span className="underline text-primary">Change Wallet</span>
