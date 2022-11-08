@@ -32,6 +32,30 @@ const FilAddressForm: FC<FilAddressFormProps> = ({ userAddress = '', saveUserAdd
     }
   }
 
+  const computeInputClasses = () => {
+    let listOfClasses = 'input w-full block fil-address mb-3'
+    if (inputAddr.length > 3 && addressIsValid) {
+      listOfClasses += ' border-solid border-success focus:border-solid focus:border-success'
+    } else if (inputAddr.length > 3) {
+      listOfClasses += ' border-error focus:border-error'
+    }
+    return listOfClasses
+  }
+
+  const renderBottomMessage = () => {
+    if (inputAddr.length > 3 && addressIsValid) {
+      return (<p className="text-body-2xs text-white mt-3">Enter an address to receive your FIL.</p>)
+    } else if (inputAddr.length > 3) {
+      return (
+      <div className='flex flex-row items-center'>
+        <Warning width={'12px'} height={'12px'} fill="#ff4d81" />
+        <span className="ml-1 text-white text-body-2xs">The FIL address entered is invalid. Please check and try again.</span>
+      </div>
+      )
+    }
+    return (<p className="text-body-2xs text-white mt-3">Enter an address to receive your FIL.</p>)
+  }
+
   return (
     <form onSubmit={handleAuthenticate} className="pt-2 w-full flex justify-between items-center">
       <div className="relative z-0 w-[460px]">
@@ -42,22 +66,9 @@ const FilAddressForm: FC<FilAddressFormProps> = ({ userAddress = '', saveUserAdd
           spellCheck="false" autoComplete="off" type="text" name="address"
           placeholder="Enter your FIL address"
           tabIndex={0} defaultValue={inputAddr} onChangeCapture={handleChangeAddress}
-          className={`input w-full block fil-address mb-3 
-          ${inputAddr.length > 3
-              ? addressIsValid
-                ? 'border-solid border-success focus:border-solid focus:border-success'
-                : ' border-error focus:border-error'
-              : ''}`} />
+          className={computeInputClasses()} />
 
-        {inputAddr.length > 3
-          ? addressIsValid
-            ? <p className="text-body-2xs text-white mt-3">Enter an address to receive your FIL.</p>
-            : <div className='flex flex-row items-center'>
-              <Warning width={'12px'} height={'12px'} fill="#ff4d81" />
-              <span className="ml-1 text-white text-body-2xs">The FIL address entered is invalid. Please check and try again.</span>
-            </div>
-          : <p className="text-body-2xs text-white mt-3">Enter an address to receive your FIL.</p>
-        }
+        {renderBottomMessage()}
       </div>
       {inputAddr.length > 3 &&
         <button
