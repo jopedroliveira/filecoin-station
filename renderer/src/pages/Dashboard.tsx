@@ -17,9 +17,6 @@ const Dashboard = (): JSX.Element => {
   const [activities, setActivities] = useState<ActivityEventMessage[]>([])
   const [walletCurtainIsOpen, setWalletCurtainIsOpen] = useState<boolean>(false)
 
-  const shortAddress = (str: string) => str
-    ? str.substring(0, 4) + '...' + str.substring(str.length - 4, str.length)
-    : ''
   const openWalletMenu = async () => {
     setWalletCurtainIsOpen(!walletCurtainIsOpen)
   }
@@ -49,14 +46,12 @@ const Dashboard = (): JSX.Element => {
   return (
     <div className="h-screen w-screen overflow-hidden bg-grayscale-100">
       <UpdateBanner />
-      <Wallet totalFIL={333} isOpen={walletCurtainIsOpen} setIsOpen={setWalletCurtainIsOpen}/>
+      <Wallet totalFIL={123432} isOpen={walletCurtainIsOpen} setIsOpen={setWalletCurtainIsOpen} />
       <div className="relative">
         <div className="max-w-[744px] mx-auto">
-          <div className="absolute left-0 z-0 top-0 w-full h-[300px]"
+          <div className="absolute left-0 z-0 top-0 w-full h-[300px] bg-no-repeat bg-center"
             style={{
               backgroundImage: `url(${HeaderBackgroundImage})`,
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: '50% 0',
               WebkitMaskImage: 'linear-gradient(black, transparent)',
               maskImage: 'linear-gradient(black, transparent)'
             }}>
@@ -65,9 +60,9 @@ const Dashboard = (): JSX.Element => {
             <div className="flex-grow flex pt-4 justify-end justify-items-end">
               <div>
                 <button type="button" className="flex items-center cursor-pointer" title="logout" onClick={openWalletMenu}>
-                  <img src={WalletIcon} alt=""/>
-                  <span className="text-right mx-3 fil-address" title="fil address">{address && shortAddress(address)}</span>
-                  <span className="underline text-primary">Change Wallet</span>
+                  <img src={WalletIcon} alt="" />
+                  <span className="text-right mx-3 fil-address" title="fil address"><span className='font-bold'>{totalEarnings || '-'}</span> FIL</span>
+                  <span className="text-primary underline underline-offset-8">Open Wallet</span>
                 </button>
               </div>
             </div>
