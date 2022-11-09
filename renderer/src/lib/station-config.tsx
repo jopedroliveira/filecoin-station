@@ -8,17 +8,6 @@ export async function setOnboardingCompleted (): Promise<void> {
   return await window.electron.stationConfig.setOnboardingCompleted()
 }
 
-export async function getFilAddress (): Promise<string | undefined> {
-  return await window.electron.stationConfig.getFilAddress()
-}
-
-export async function setFilAddress (address: string | undefined): Promise<void> {
-  return await window.electron.stationConfig.setFilAddress(address)
-}
-
-export async function setStationFilAddress (address: string | undefined): Promise<void> {
-  return await window.electron.stationConfig.setFilAddress(address)
-}
 
 export async function isSaturnNodeRunning (): Promise<boolean> {
   return await window.electron.saturnNode.isRunning()
@@ -58,4 +47,27 @@ export async function restartToUpdate (): Promise<void> {
 
 export function openReleaseNotes (): void {
   return window.electron.openReleaseNotes()
+}
+
+export async function getUserAddress (): Promise<string | undefined> {
+  return await window.electron.stationConfig.getFilAddress()
+}
+
+export async function setUserAddress (address: string | undefined): Promise<void> {
+  return await window.electron.stationConfig.setFilAddress(address)
+}
+
+export async function getStationAddress (): Promise<string> {
+  // todo: wire backend
+  return new Promise((resolve) => { resolve('f1mvpmuyawhjtuq5kntxvhiwfrmdr5iseaxtai7zq') })
+}
+
+export async function getWalletBalance (): Promise<number> {
+  // todo: wire backend
+  return new Promise((resolve) => { resolve(23) })
+}
+
+export async function transferFunds (): Promise<true> {
+  // todo: wire backend
+  return true
 }

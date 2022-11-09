@@ -62,7 +62,7 @@
     @apply py-2 px-4 h-12 rounded-full font-body text-body-s w-fit 
     bg-transparent text-white border border-white border-solid
     hover:bg-white hover:text-primary hover:drop-shadow-[0_6px_12px_rgba(0,0,0,0.25)]
-    active:bg-[#E9EBF1] active:text-primary active:drop-shadow-[0_2px_4px_rgba(0,0,0,0.32)]
+    active:bg-grayscale-250 active:text-primary active:drop-shadow-[0_2px_4px_rgba(0,0,0,0.32)]
     disabled:bg-transparent disabled:text-white disabled:opacity-50
     disabled:outline disabled:outline-1 disabled:outline-white
   }

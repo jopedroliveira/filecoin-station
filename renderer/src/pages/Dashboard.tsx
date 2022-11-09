@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
-  getAllActivities, getFilAddress,
+  getAllActivities,
   getTotalEarnings, getTotalJobsCompleted
 } from '../lib/station-config'
 import { ActivityEventMessage } from '../typings'
@@ -11,7 +11,6 @@ import UpdateBanner from '../components/UpdateBanner'
 import Wallet from '../components/Wallet'
 
 const Dashboard = (): JSX.Element => {
-  const [address, setAddress] = useState<string | undefined>()
   const [totalJobs, setTotalJobs] = useState<number>(0)
   const [totalEarnings, setTotalEarnigs] = useState<number>(0)
   const [activities, setActivities] = useState<ActivityEventMessage[]>([])
@@ -21,10 +20,10 @@ const Dashboard = (): JSX.Element => {
     setWalletCurtainIsOpen(!walletCurtainIsOpen)
   }
 
+  // todo: move to an hook
   useEffect(() => {
     const loadStoredInfo = async () => {
       Promise.all([
-        (async () => { setAddress(await getFilAddress()) })(),
         (async () => { setActivities(await getAllActivities()) })(),
         (async () => { setTotalEarnigs(await getTotalEarnings()) })(),
         (async () => { setTotalJobs(await getTotalJobsCompleted()) })()
@@ -46,7 +45,7 @@ const Dashboard = (): JSX.Element => {
   return (
     <div className="h-screen w-screen overflow-hidden bg-grayscale-100">
       <UpdateBanner />
-      <Wallet totalFIL={123432} isOpen={walletCurtainIsOpen} setIsOpen={setWalletCurtainIsOpen} />
+      <Wallet isOpen={walletCurtainIsOpen} setIsOpen={setWalletCurtainIsOpen} />
       <div className="relative">
         <div className="max-w-[744px] mx-auto">
           <div className="absolute left-0 z-0 top-0 w-full h-[300px] bg-no-repeat bg-center"
@@ -61,7 +60,7 @@ const Dashboard = (): JSX.Element => {
               <div>
                 <button type="button" className="flex items-center cursor-pointer" title="logout" onClick={openWalletMenu}>
                   <img src={WalletIcon} alt="" />
-                  <span className="text-right mx-3 fil-address" title="fil address"><span className='font-bold'>{totalEarnings || '-'}</span> FIL</span>
+                  <span className="text-right mx-3" title="wallet"><span className='font-bold'>{totalEarnings || '-'}</span> FIL</span>
                   <span className="text-primary underline underline-offset-8">Open Wallet</span>
                 </button>
               </div>

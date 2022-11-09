@@ -3,29 +3,38 @@ import HeaderBackgroundImage from '../assets/img/header-curtain.png'
 import { ReactComponent as InfoIcon } from '../assets/img/info.svg'
 import FilAddressDisplay from './FilAddressDisplay'
 import FilAddressForm from './FilAddressForm'
-import { getFilAddress, setFilAddress as saveFilAddress } from '../lib/station-config'
+import {
+  getUserAddress,
+  setUserAddress as saveUserFilAddress,
+  getStationAddress,
+  getWalletBalance,
+  transferFunds
+} from '../lib/station-config'
 
 interface PropsWallet {
   isOpen: boolean,
-  setIsOpen: (state: boolean) => void,
-  totalFIL: number | undefined
+  setIsOpen: (state: boolean) => void
 }
 
-const Wallet: FC<PropsWallet> = ({ isOpen = false, setIsOpen, totalFIL = 0 }) => {
-  const [userAddress, setUserAddress] = useState<string | undefined>()
+const Wallet: FC<PropsWallet> = ({ isOpen = false, setIsOpen }) => {
+  const [stationAddress, setStationAddress] = useState<string>()
+  const [userFilAddress, setUserFilAddress] = useState<string | undefined>()
   const [editMode, setEditMode] = useState<boolean>(false)
   const [trasnferMode, setTransferMode] = useState<boolean>(false)
+  const [walletBalance, setWalletBalance] = useState<number>(0)
 
   useEffect(() => {
     const loadStoredInfo = async () => {
-      setUserAddress(await getFilAddress())
+      setUserFilAddress(await getUserAddress())
+      setStationAddress(await getStationAddress())
+      setWalletBalance(await getWalletBalance())
     }
     loadStoredInfo()
-  }, [userAddress])
+  }, [userFilAddress])
 
-  const saveUserAddress = async (address: string) => {
-    await saveFilAddress(address)
-    setUserAddress(address)
+  const saveAddress = async (address: string) => {
+    await saveUserFilAddress(address)
+    setUserFilAddress(address)
     setEditMode(false)
   }
 
@@ -35,14 +44,31 @@ const Wallet: FC<PropsWallet> = ({ isOpen = false, setIsOpen, totalFIL = 0 }) =>
     setTransferMode(false)
   }
 
+  const enableEditMode = () => {
+    setEditMode(true)
+    setTransferMode(false)
+  }
+
+  const transferAllFunds = async () => {
+    await transferFunds()
+    setTransferMode(false)
+  }
+
+  const renderUserAddressInput = () => {
+    if (editMode || !userFilAddress) {
+      return (<FilAddressForm userAddress={userFilAddress} saveUserAddress={saveAddress} />)
+    }
+    return (<FilAddressDisplay userAddress={userFilAddress} setEditMode={enableEditMode} />)
+  }
+
   const renderTransferCommands = () => {
     if (!editMode && trasnferMode) {
       return (
         <div className='relative flex gap-1 items-center'>
-          <button className="btn-primary bg-[#E9EBF1] text-primary">
-            <span className="text-2xs px-4 text-body-s">Send <span className='font-bold'>{totalFIL} FIL</span></span>
+          <button className="btn-primary bg-grayscale-250 text-primary">
+            <span className="text-2xs px-4 text-body-s">Send <span className='font-bold'>{walletBalance} FIL</span></span>
           </button>
-          <button className="btn-primary" onClick={() => { setTransferMode(false) }}>
+          <button className="btn-primary" onClick={transferAllFunds}>
             <span className="text-2xs px-4 text-body-s">Cancel</span>
           </button>
         </div>
@@ -51,46 +77,39 @@ const Wallet: FC<PropsWallet> = ({ isOpen = false, setIsOpen, totalFIL = 0 }) =>
       return (
         <div className='relative flex items-center'>
           <button className="btn-primary bg-transparent text-white border border-white border-solid border-1"
-            disabled={!userAddress}
+            disabled={!userFilAddress && walletBalance > 0}
             onClick={() => { setTransferMode(true) }}>
             <span className="text-2xs px-4 text-body-s">Transfer FIL</span>
           </button>
-          {!userAddress && <InfoIcon className="absolute center -ml-3.5 fill-[#C3CAD9]" width={'24px'} height={'24px'} />}
+          {!userFilAddress && <InfoIcon className="absolute center -ml-3.5 fill-grayscale-450" width={'24px'} height={'24px'} />}
         </div>
       )
     }
-  }
-
-  const renderUserAddressInput = () => {
-    if (editMode || !userAddress) {
-      return (<FilAddressForm userAddress={userAddress} saveUserAddress={saveUserAddress} />)
-    }
-    return (<FilAddressDisplay userAddress={userAddress} setEditMode={() => { setEditMode(true); setTransferMode(false) }} />)
   }
 
   return (
     <>
       <div className={`absolute h-full w-full bg-primary transition-all duration-[800ms] ease-in-out ${isOpen ? 'z-30 opacity-20 visible' : 'opacity-0 z-[25] invisible'}`}
         onClick={closeCurtain} />
-      <div className={`absolute z-30  w-[733px] h-full bg-grayscale-300 transition-all duration-[800ms] ease-in-out ${isOpen ? 'right-0' : '-right-[733px] invisible'}`} >
+      <div className={`absolute z-30  w-[733px] h-full bg-white transition-all duration-[800ms] ease-in-out ${isOpen ? 'right-0' : '-right-[733px] invisible'}`} >
         <div className='relative'>
-          <div className='h-8 bg-[#330867] flex items-center px-8' onClick={() => setEditMode(false)}>
+          <div className='h-8 bg-primary-dark flex items-center px-8' onClick={() => setEditMode(false)}>
             <span className='text text-body-3xs text-white opacity-80 mr-3'>STATION ADDRESS</span>
-            <span className='text text-body-3xs text-white'>f1443254jnkbvgye2343</span>
+            <span className='text text-body-3xs text-white'>{stationAddress}</span>
           </div>
           <div className='h-60 bg-primary bg-no-repeat bg-center' style={{ backgroundImage: `url(${HeaderBackgroundImage})` }}>
-            <div className="py-6 px-8">
-              <div className="flex flex-row justify-between align-baseline mb-6" onClick={() => setEditMode(false)}>
+            <div className="py-6 px-6">
+              <div className="flex flex-row justify-between align-baseline mb-6">
+                {renderUserAddressInput()}
+              </div>
+              <div className="flex flex-row justify-between align-baseline" onClick={() => setEditMode(false)}>
                 <div>
                   <p className="w-fit text-body-3xs text-white opacity-80 uppercase">Total FIL</p>
                   <p className="w-fit text-header-m text-white font-bold font-number" title="total earnings">
-                    {totalFIL}<span className="text-header-3xs ml-3">FIL</span>
+                    {walletBalance}<span className="text-header-3xs ml-3">FIL</span>
                   </p>
                 </div>
                 {renderTransferCommands()}
-              </div>
-              <div className="flex flex-row justify-between align-baseline">
-                {renderUserAddressInput()}
               </div>
             </div>
           </div>
