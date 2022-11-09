@@ -14,8 +14,6 @@ export declare global {
         setUserAddress: (address: string | undefined) => Promise<void>
       },
       stationConfig: {
-        getAllActivities(): Promise<Activity[]>,
-        getTotalJobsCompleted(): Promise<number>,
         getStationConfig: () => Promise<StationConfig>,
         openReleaseNotes(): void,
         restartToUpdate(): void,
