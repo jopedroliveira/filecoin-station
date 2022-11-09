@@ -4,17 +4,6 @@ export declare global {
   interface Window {
     electron: {
       stationBuildVersion: string,
-
-      getAllActivities(): Promise<Activity[]>,
-      onActivityLogged(callback: (allActivities: Activity[]) => void),
-
-      getTotalJobsCompleted(): Promise<number>,
-      onJobStatsUpdated (callback: (totalJobCount: number) => void),
-
-      getUpdaterStatus(): Promise<{updateAvailable: boolean}>,
-      openReleaseNotes(): void,
-      restartToUpdate(): void,
-
       saturnNode: {
         start: () => Promise<void>,
         stop: () => Promise<void>,
@@ -22,20 +11,22 @@ export declare global {
         isReady: () => Promise<boolean>,
         getLog: () => Promise<string>,
         getWebUrl: () => Promise<string>,
-        getFilAddress: () => Promise<string | undefined>,
-        setFilAddress: (address: string | undefined) => Promise<void>
+        setUserAddress: (address: string | undefined) => Promise<void>
       },
       stationConfig: {
-        getFilAddress: () => Promise<string | undefined>,
-        setFilAddress: (address: string | undefined) => Promise<void>,
-        getOnboardingCompleted: () => Promise<boolean>,
-        setOnboardingCompleted: () => Promise<void>
+        getAllActivities(): Promise<Activity[]>,
+        getTotalJobsCompleted(): Promise<number>,
+        getStationConfig: () => Promise<StationConfig>,
+        openReleaseNotes(): void,
+        restartToUpdate(): void,
       },
       stationEvents: {
+        onUpdateAvailable: (callback: () => void) => () => void
         onActivityLogged: (callback) => () => void
         onJobProcessed: (callback) => () => void
         onEarningsChanged: (callback) => () => void
-        onUpdateAvailable: (callback: () => void) => () => void
+        onBalanceChange: (callback) => () => void
+        onTransactionsChange: (callback) => () => void
       },
       dialogs: {
         confirmChangeWalletAddress: () => Promise<boolean>
@@ -50,4 +41,23 @@ export type ActivityEventMessage = {
   type: string;
   source: string;
   message: string;
+}
+
+export type Transaction = {
+  timestamp: number;
+  status: 'success' | 'pending' | 'error';
+  amount: number;
+  destination: string
+}
+
+export type StationConfig = {
+  updateAvailable: boolean
+  onboardingCompleted: boolean;
+  totalEarnings: number;
+  totalJobs: number;
+  activityLog: ActivityEventMessage[];
+  userAddress: string | undefined;
+  stationAddress: string;
+  stationBalance: number;
+  stationTransactions: Transaction[]
 }
