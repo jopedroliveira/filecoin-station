@@ -1,15 +1,18 @@
-import { FC, useState, SyntheticEvent, ChangeEvent, useEffect } from 'react'
+import { FC, useState, SyntheticEvent, useEffect } from 'react'
 import { checkAddressString } from '@glif/filecoin-address'
 import { ReactComponent as Warning } from '../assets/img/icons/error.svg'
 
 interface FilAddressFormProps {
   destinationAddress: string | undefined,
-  saveDestinationAddress: (address: string | undefined) => void
+  saveDestinationAddress: (address: string | undefined) => void,
+  editMode: boolean
 }
 
-const FilAddressForm: FC<FilAddressFormProps> = ({ destinationAddress = '', saveDestinationAddress }) => {
+const FilAddressForm: FC<FilAddressFormProps> = ({ destinationAddress = '', saveDestinationAddress, editMode }) => {
   const [addressIsValid, setAddressIsValid] = useState<boolean | undefined>()
   const [inputAddr, setInputAddr] = useState<string>(destinationAddress)
+
+  useEffect(() => { setInputAddr(destinationAddress) }, [editMode, destinationAddress])
 
   useEffect(() => {
     if (inputAddr === '') {
@@ -33,7 +36,9 @@ const FilAddressForm: FC<FilAddressFormProps> = ({ destinationAddress = '', save
 
   const computeInputClasses = () => {
     const listOfClasses = 'input w-full block fil-address mt-[7px]'
-
+    if (inputAddr === destinationAddress) {
+      return listOfClasses
+    }
     if (addressIsValid) {
       return `${listOfClasses} border-solid border-green-100 focus:border-solid focus:border-green-100`
     } else {
@@ -61,21 +66,22 @@ const FilAddressForm: FC<FilAddressFormProps> = ({ destinationAddress = '', save
           <input
             spellCheck="false" autoComplete="off" type="text" name="address"
             placeholder=" "
-            tabIndex={0} defaultValue={destinationAddress} onChange={(event) => { console.log(event.target.value); setInputAddr(event.target.value) }}
+            tabIndex={0} value={inputAddr}
+            onChange={(event) => { setInputAddr(event.target.value) }}
             className={computeInputClasses()} />
           <label htmlFor="address"
             className="absolute duration-300 top-3 origin-top-lef pointer-events-none text-white opacity-80 font-body text-body-2xs uppercase mb-3">
             Your FIL Address</label>
           {renderBottomMessage()}
         </div>
-        {/* {inputAddr.length > validationThreshold && */}
-        <button
-          className="btn-primary mb-6 submit-address bg-grayscale-250 text-primary"
-          disabled={!(addressIsValid)}
-          title="save address" type="submit" value="connect">
-          <span className="text-xs px-4">Save Address</span>
-        </button>
-        {/* } */}
+        {(inputAddr !== destinationAddress || inputAddr.length > 0) &&
+          <button
+            className="btn-primary mb-6 submit-address bg-grayscale-250 text-primary"
+            disabled={!(addressIsValid)}
+            title="save address" type="submit" value="connect">
+            <span className="text-xs px-4">Save Address</span>
+          </button>
+        }
       </form>
     </>
   )

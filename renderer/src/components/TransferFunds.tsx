@@ -28,7 +28,7 @@ const TransferFundsButtons: FC<TransferFundsButtonsProps> = ({ transferMode, bal
             <span className="text-2xs px-4 text-body-s">Transfer FIL</span>
           </button>
           {disabled &&
-            <div className="absolute -left-[10px] mb-[1px] hover:-left-[86px] hover:-top-[53px] flex flex-col items-center group">
+            <div className="absolute -left-[13px] mb-[1px] hover:-left-[89px] hover:-top-[53px] flex flex-col items-center group">
               <div className='w-44 px-2 py-4 mb-[13px] rounded-lg bg-grayscale-200 hidden group-hover:block'>
                 <p className='text-body-2xs text-center'>We need a FIL address to transfer your FIL</p>
               </div>

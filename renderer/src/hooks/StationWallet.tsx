@@ -8,7 +8,7 @@ import {
 } from '../lib/station-config'
 import { FILTransaction } from '../typings'
 
-const useWallet = (): [string, string | undefined, number, FILTransaction[] | [], (address: string) => void, FILTransaction | undefined, () => void] => {
+const useWallet = (): [string, string | undefined, number, FILTransaction[] | [], (address: string|undefined) => void, FILTransaction | undefined, () => void] => {
   const datt = Date.now()
   const [stationAddress, setStationAddress] = useState<string>('')
   const [destinationFilAddress, setDestinationFilAddress] = useState<string | undefined>()
@@ -22,7 +22,7 @@ const useWallet = (): [string, string | undefined, number, FILTransaction[] | []
     address: 'f1mvpmuyawhjtuq5kntxvhiwfrmdr5iseaxtai7zq'
   })
 
-  const setUserAddress = async (address: string | undefined) => {
+  const setDestinationAddress = async (address: string | undefined) => {
     await setDestinationWalletAddress(address)
     setDestinationFilAddress(address)
   }
@@ -60,7 +60,7 @@ const useWallet = (): [string, string | undefined, number, FILTransaction[] | []
     }
   }, [stationAddress, destinationFilAddress, latestTransaction])
 
-  return [stationAddress, destinationFilAddress, walletBalance, walletTransactions, setUserAddress, latestTransaction, dismissLatestTransaction]
+  return [stationAddress, destinationFilAddress, walletBalance, walletTransactions, setDestinationAddress, latestTransaction, dismissLatestTransaction]
 }
 
 export default useWallet
