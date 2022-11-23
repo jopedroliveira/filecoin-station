@@ -11,7 +11,6 @@ interface WalletWidgetProps {
 const WalletWidget: FC<WalletWidgetProps> = ({ onClick }) => {
   const [,, balance,,, latestTransaction, dismissLatestTransaction] = useWallet()
 
-  console.log(latestTransaction)
   return (
     <div onClick={() => { onClick(); dismissLatestTransaction() }}>
       <div className='flex items-center '>
