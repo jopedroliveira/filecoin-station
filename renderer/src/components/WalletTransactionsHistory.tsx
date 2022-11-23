@@ -11,22 +11,21 @@ import { ReactComponent as WalletIcon } from '../assets/img/icons/wallet.svg'
 import WalletTransactoinStatusWidget from './WalletTransactionStatusWidget'
 
 interface WalletTransactionsHistoryProps {
-  allTransactions: FILTransaction[] | []
+  allTransactions: FILTransaction[] | [],
+  latestTransaction: FILTransaction | undefined
 }
 
-const WalletTransactionsHistory: FC<WalletTransactionsHistoryProps> = ({ allTransactions = [] }) => {
-  const today = new Date().setUTCHours(0, 0, 0, 0)
-  const recentTransactions = allTransactions.filter((t) => t.timestamp >= today)
-  const previousTransactions = allTransactions.filter((t) => t.timestamp < today)
-
+const WalletTransactionsHistory: FC<WalletTransactionsHistoryProps> = ({ allTransactions = [], latestTransaction = undefined }) => {
+  const allTransactionsExcludingCurrent = allTransactions.filter((t) => (t.timestamp !== latestTransaction?.timestamp))
+  
   return (
     <>
       {allTransactions.length > 0
         ? <>
-            {recentTransactions.length > 0 && <RecentTransaction key={recentTransactions[0].timestamp} transaction={recentTransactions[0]} />}
+            {latestTransaction && <RecentTransaction key={latestTransaction.timestamp} transaction={latestTransaction} />}
             <div className='pt-8'>
               <p className="px-6 mb-2 w-fit text-body-3xs text-black opacity-80 uppercase">WALLET HISTORY</p>
-              {previousTransactions.map(
+              {allTransactionsExcludingCurrent.map(
                 (transaction) => <Transaction key={transaction.timestamp} transaction={transaction} />)}
             </div>
           </>
