@@ -22,7 +22,7 @@ const useWallet = (): [string, string | undefined, number, FILTransaction[] | []
     address: 'f1mvpmuyawhjtuq5kntxvhiwfrmdr5iseaxtai7zq'
   })
 
-  const setUserAddress = async (address: string) => {
+  const setUserAddress = async (address: string | undefined) => {
     await setDestinationWalletAddress(address)
     setDestinationFilAddress(address)
   }

@@ -21,7 +21,7 @@ const WalletModule: FC<PropsWallet> = ({ isOpen = false }) => {
     setEditMode(false)
     setTransferMode(false)
     dismissLatestTransaction()
-  }, [isOpen])
+  }, [dismissLatestTransaction, isOpen])
 
   const reset = () => {
     setEditMode(false)
@@ -38,7 +38,7 @@ const WalletModule: FC<PropsWallet> = ({ isOpen = false }) => {
     setTransferMode(true)
   }
 
-  const saveAddress = async (address: string) => {
+  const saveAddress = async (address: string | undefined) => {
     setUserAddress(address)
     setEditMode(false)
   }
@@ -76,7 +76,7 @@ const WalletModule: FC<PropsWallet> = ({ isOpen = false }) => {
             <div>
               <p className="w-fit text-body-3xs text-white opacity-80 uppercase">Total FIL</p>
               <p className="w-fit text-header-m text-white font-bold font-number">
-                {walletBalance.toLocaleString()}<span className="text-header-3xs ml-3">FIL</span>
+                {walletBalance.toLocaleString(undefined, { minimumFractionDigits: 3 })}<span className="text-header-3xs ml-3">FIL</span>
               </p>
             </div>
             {!editMode &&

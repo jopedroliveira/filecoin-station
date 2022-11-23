@@ -113,7 +113,7 @@ function setDestinationWalletAddress(address) {
  */
 function getStationWalletBalance() {
   // todo: backend logic
-  return 3123.123
+  return 3123.1239
 }
 
 /**

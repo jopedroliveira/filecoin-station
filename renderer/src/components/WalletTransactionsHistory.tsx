@@ -17,7 +17,7 @@ interface WalletTransactionsHistoryProps {
 
 const WalletTransactionsHistory: FC<WalletTransactionsHistoryProps> = ({ allTransactions = [], latestTransaction = undefined }) => {
   const allTransactionsExcludingCurrent = allTransactions.filter((t) => (t.timestamp !== latestTransaction?.timestamp))
-  
+
   return (
     <>
       {allTransactions.length > 0
