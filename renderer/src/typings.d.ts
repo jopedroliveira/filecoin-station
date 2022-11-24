@@ -33,7 +33,8 @@ export declare global {
         setDestinationWalletAddress: (address: string | undefined) => Promise<void>,
         getStationWalletBalance: () => Promise<number>,
         getStationWalletTransactionsHistory: () => Promise<TransactionMessage[]>,
-        trasnferAllFundsToDestinationWallet: () => Promise<void>
+        trasnferAllFundsToDestinationWallet: () => Promise<void>,
+        browseTransactionTracker: (transactionHash: string) => void
       },
       stationEvents: {
         onActivityLogged: (callback) => () => void,
@@ -61,6 +62,7 @@ export type ActivityEventMessage = {
 export type FILTransactionStatus = 'sent' | 'processing' | 'failed'
 
 export type FILTransaction = {
+  hash: string
   timestamp: number
   status: TransactionStatus
   outgoing: boolean

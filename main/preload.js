@@ -34,7 +34,8 @@ contextBridge.exposeInMainWorld('electron', {
     setDestinationWalletAddress: (/** @type {string | undefined} */ address) => ipcRenderer.invoke('station:setDestinationWalletAddress', address),
     getStationWalletBalance: () => ipcRenderer.invoke('station:getStationWalletBalance'),
     getStationWalletTransactionsHistory: () => ipcRenderer.invoke('station:getStationWalletTransactionsHistory'),
-    trasnferAllFundsToDestinationWallet: () => ipcRenderer.invoke('station:trasnferAllFundsToDestinationWallet')
+    trasnferAllFundsToDestinationWallet: () => ipcRenderer.invoke('station:trasnferAllFundsToDestinationWallet'),
+    browseTransactionTracker: (/** @type {string } */ transactoinHash) => ipcRenderer.invoke('station:browseTransactionTracker', transactoinHash)
   },
   stationEvents: {
     onActivityLogged: (/** @type {(value: Activity) => void} */ callback) => {
