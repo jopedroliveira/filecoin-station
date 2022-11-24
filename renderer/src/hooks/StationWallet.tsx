@@ -14,22 +14,17 @@ const useWallet = (): [string, string | undefined, number, FILTransaction[] | []
   const [destinationFilAddress, setDestinationFilAddress] = useState<string | undefined>()
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const [walletTransactions, setWalletTransactions] = useState<FILTransaction[]>([])
-  const [latestTransaction, setLatestTransaction] = useState<FILTransaction | undefined>({
-    timestamp: datt,
-    status: 'processing',
-    outgoing: true,
-    amount: '32',
-    address: 'f1mvpmuyawhjtuq5kntxvhiwfrmdr5iseaxtai7zq'
-  })
+  const [currentTransaction, setCurrentTransaction] = useState<FILTransaction | undefined>()
 
   const setDestinationAddress = async (address: string | undefined) => {
     await setDestinationWalletAddress(address)
     setDestinationFilAddress(address)
   }
 
-  const dismissLatestTransaction = () => {
-    if (latestTransaction && latestTransaction.status !== 'processing') {
-      setLatestTransaction(undefined)
+  const dismissCurrentTransaction = () => {
+    if (currentTransaction && currentTransaction.status !== 'processing') {
+      setCurrentTransaction(undefined)
+      setWalletTransactions([currentTransaction, ...walletTransactions])
     }
   }
 
@@ -43,13 +38,16 @@ const useWallet = (): [string, string | undefined, number, FILTransaction[] | []
     loadStoredInfo()
 
     const updateWalletTransactionsArray = (transactions: FILTransaction[]) => {
-      const newLatestTransaction = transactions[0]
+      const newCurrentTransaction = transactions[0]
+      if (newCurrentTransaction.status === 'processing' || currentTransaction?.timestamp === newCurrentTransaction.timestamp) {
+        setCurrentTransaction(newCurrentTransaction)
+        if (newCurrentTransaction.status !== 'processing') { setTimeout(() => dismissCurrentTransaction(), 2000) }
 
-      if (newLatestTransaction.status === 'processing' || latestTransaction?.timestamp === newLatestTransaction.timestamp) {
-        setLatestTransaction(newLatestTransaction)
-        setTimeout(() => setLatestTransaction(undefined), 2000)
+        const transactionsExceptLatest = transactions.filter((t) => { return t !== newCurrentTransaction })
+        setWalletTransactions(transactionsExceptLatest)
+      } else {
+        setWalletTransactions(transactions)
       }
-      setWalletTransactions(transactions)
     }
 
     const unsubscribeOnTransactionUpdate = window.electron.stationEvents.onTransactionUpdate(updateWalletTransactionsArray)
@@ -58,9 +56,9 @@ const useWallet = (): [string, string | undefined, number, FILTransaction[] | []
       unsubscribeOnTransactionUpdate()
       unsubscribeOnBalanceUpdate()
     }
-  }, [stationAddress, destinationFilAddress, latestTransaction])
+  }, [stationAddress, destinationFilAddress, currentTransaction])
 
-  return [stationAddress, destinationFilAddress, walletBalance, walletTransactions, setDestinationAddress, latestTransaction, dismissLatestTransaction]
+  return [stationAddress, destinationFilAddress, walletBalance, walletTransactions, setDestinationAddress, currentTransaction, dismissCurrentTransaction]
 }
 
 export default useWallet

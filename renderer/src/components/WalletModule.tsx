@@ -55,8 +55,8 @@ const WalletModule: FC<PropsWallet> = ({ isOpen = false }) => {
         <p className='text text-body-3xs text-white'>{stationAddress}</p>
       </div>
       <div className='h-60 bg-primary bg-no-repeat bg-center' style={{ backgroundImage: `url(${HeaderBackgroundImage})` }}>
-        <div className="py-6 px-6">
-          <div className="flex flex-row justify-between align-baseline mb-6">
+        <div className="py-6 px-6 reset">
+          <div className="flex flex-row justify-between align-baseline">
             {editMode || !destinationAddress
               ? <div className='w-full' onClick={() => (setEditMode(true))}>
                 <FilAddressForm
@@ -78,7 +78,7 @@ const WalletModule: FC<PropsWallet> = ({ isOpen = false }) => {
               </div>
             }
           </div>
-          <div className="flex flex-row justify-between align-baseline" onClick={() => { setEditMode(false) }}>
+          <div className="flex flex-row justify-between align-baseline pt-6" onClick={() => { setEditMode(false) }}>
             <div>
               <p className="w-fit text-body-3xs text-white opacity-80 uppercase">Total FIL</p>
               <p className="w-fit text-header-m text-white font-bold font-number">
