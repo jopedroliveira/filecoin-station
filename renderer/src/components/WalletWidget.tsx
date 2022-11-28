@@ -12,7 +12,7 @@ const WalletWidget: FC<WalletWidgetProps> = ({ onClick }) => {
   const [,, balance,,, latestTransaction, dismissLatestTransaction] = useWallet()
 
   return (
-    <div onClick={() => { onClick(); dismissLatestTransaction() }}>
+    <div className="cursor-pointer" onClick={() => { onClick(); dismissLatestTransaction() }}>
       <div className='flex items-center '>
         <WalletIcon />
         <span className="text-right mx-3" title="wallet"><span className='font-bold'>{balance.toLocaleString(undefined, { minimumFractionDigits: 3 }) || 0 }</span> FIL</span>

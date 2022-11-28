@@ -14,7 +14,7 @@ const TransferFundsButtons: FC<TransferFundsButtonsProps> = ({ transferMode, bal
     <>
       {transferMode
         ? <div className='relative flex gap-1 items-center'>
-          <button className="btn-primary bg-grayscale-250 text-primary">
+          <button className="btn-primary bg-grayscale-250 text-primary" onClick={transferAllFunds}>
             <span className="text-2xs px-4 text-body-s">Send <span className='font-bold'>{balance} FIL</span></span>
           </button>
           <button className="btn-primary" onClick={transferAllFunds}>

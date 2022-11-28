@@ -2,7 +2,6 @@ import { FC } from 'react'
 import { ReactComponent as SentIcon } from '../assets/img/icons/sent.svg'
 import { ReactComponent as FailedIcon } from '../assets/img/icons/failed.svg'
 import { ReactComponent as ProcessingIcon } from '../assets/img/icons/processing.svg'
-import { ReactComponent as ExternalLinkIcon } from '../assets/img/icons/external.svg'
 import { FILTransaction } from '../typings'
 import { brownseTransactionTracker } from '../lib/station-config'
 

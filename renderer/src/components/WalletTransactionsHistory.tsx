@@ -16,16 +16,19 @@ interface WalletTransactionsHistoryProps {
 }
 
 const WalletTransactionsHistory: FC<WalletTransactionsHistoryProps> = ({ allTransactions = [], latestTransaction = undefined }) => {
-  const allTransactionsExcludingCurrent = allTransactions.filter((t) => (t.timestamp !== latestTransaction?.timestamp))
+  const confirmedTransactions = allTransactions.filter((t) => (t.timestamp !== latestTransaction?.timestamp))
 
   return (
     <>
       {allTransactions.length > 0
         ? <>
-          {latestTransaction && <RecentTransaction key={latestTransaction.timestamp} transaction={latestTransaction} />}
+          {latestTransaction &&
+            <RecentTransaction key={latestTransaction.timestamp} transaction={latestTransaction} />
+          }
+
           <div className='pt-8'>
             <p className="px-8 mb-2 w-fit text-body-3xs text-black opacity-80 uppercase">WALLET HISTORY</p>
-            {allTransactionsExcludingCurrent.map(
+            {confirmedTransactions.map(
               (transaction) => <Transaction key={transaction.timestamp} transaction={transaction} />)}
           </div>
         </>
@@ -72,7 +75,7 @@ interface TransactionProps {
 
 const RecentTransaction: FC<TransactionProps> = ({ transaction }) => {
   return (
-    <div className={`pt-8 pb-8
+    <div className={`pt-8 pb-8 
             ${transaction.status === 'sent'
         ? 'bg-green-200'
         : transaction.status === 'failed'
@@ -96,13 +99,13 @@ const RecentTransaction: FC<TransactionProps> = ({ transaction }) => {
                   ? 'Failed to send'
                   : 'Sending'
               }
-              <span className='font-bold mx-1'>{transaction.amount}</span>
+              <span className='font-bold mx-1'>{transaction.amount} FIL</span>
               {transaction.outgoing && 'to'}
               {transaction.outgoing && <span className='font-bold mx-1'>{transaction.address}</span>}
             </span>
           </div>
         </div>
-        <div className="ml-[97px]"><WalletTransactoinStatusWidget currentTransactionStatus={transaction.status} renderBackground={false} /></div>
+        <div className="ml-[97px]"><WalletTransactoinStatusWidget currentTransaction={transaction} renderBackground={false} /></div>
       </div>
     </div>
   )
@@ -126,14 +129,14 @@ const Transaction: FC<TransactionProps> = ({ transaction }) => {
           </span>
           <span className='text-body-s text-black'>
             {transaction.outgoing ? 'Sent' : 'Received'}
-            <span className='font-bold mx-1'>{transaction.amount}</span>
+            <span className='font-bold mx-1'>{transaction.amount} FIL</span>
             {transaction.outgoing && 'to'}
             {transaction.outgoing && <span className='font-bold mx-1'>{transaction.address}</span>}
           </span>
         </div>
         <div className='flex invisible group-hover:visible'>
-            <p className="text-body-2xs text-primary ml-2 cursor-pointer" onClick={() => openExternalURL(transaction.hash)}><i><ExternalLinkIcon /></i></p>
-          </div>
+          <p className="text-body-2xs text-primary ml-2 cursor-pointer" onClick={() => openExternalURL(transaction.hash)}><i><ExternalLinkIcon /></i></p>
+        </div>
       </div>
     </div>
   )

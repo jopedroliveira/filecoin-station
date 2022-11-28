@@ -22,8 +22,8 @@ const useWallet = (): [string, string | undefined, number, FILTransaction[] | []
 
   const dismissCurrentTransaction = () => {
     if (currentTransaction && currentTransaction.status !== 'processing') {
-      setCurrentTransaction(undefined)
       setWalletTransactions([currentTransaction, ...walletTransactions])
+      setCurrentTransaction(undefined)
     }
   }
 
@@ -35,12 +35,14 @@ const useWallet = (): [string, string | undefined, number, FILTransaction[] | []
       setWalletTransactions(await getStationWalletTransactionsHistory())
     }
     loadStoredInfo()
+  }, [stationAddress, destinationFilAddress])
 
+  useEffect(() => {
     const updateWalletTransactionsArray = (transactions: FILTransaction[]) => {
       const newCurrentTransaction = transactions[0]
-      if (newCurrentTransaction.status === 'processing' || currentTransaction?.timestamp === newCurrentTransaction.timestamp) {
+      if (newCurrentTransaction.status === 'processing' || (currentTransaction && +currentTransaction.timestamp === +newCurrentTransaction.timestamp)) {
         setCurrentTransaction(newCurrentTransaction)
-        if (newCurrentTransaction.status !== 'processing') { setTimeout(() => dismissCurrentTransaction(), 2000) }
+        if (newCurrentTransaction.status !== 'processing') { setTimeout(() => { setWalletTransactions(transactions); setCurrentTransaction(undefined) }, 6000) }
 
         const transactionsExceptLatest = transactions.filter((t) => { return t !== newCurrentTransaction })
         setWalletTransactions(transactionsExceptLatest)
@@ -55,7 +57,7 @@ const useWallet = (): [string, string | undefined, number, FILTransaction[] | []
       unsubscribeOnTransactionUpdate()
       unsubscribeOnBalanceUpdate()
     }
-  }, [stationAddress, destinationFilAddress, currentTransaction])
+  }, [currentTransaction, walletBalance])
 
   return [stationAddress, destinationFilAddress, walletBalance, walletTransactions, setDestinationAddress, currentTransaction, dismissCurrentTransaction]
 }
