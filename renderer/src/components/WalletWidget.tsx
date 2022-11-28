@@ -20,7 +20,7 @@ const WalletWidget: FC<WalletWidgetProps> = ({ onClick }) => {
           <span className="text-primary underline underline-offset-8">Open Wallet</span>
         </button>
       </div>
-      { latestTransaction && <WalletTransactoinStatusWidget currentTransactionStatus={latestTransaction.status} renderBackground={true} /> }
+      { latestTransaction && <WalletTransactoinStatusWidget currentTransaction={latestTransaction} renderBackground={true} /> }
     </div>
   )
 }

@@ -9,7 +9,6 @@ import {
 import { FILTransaction } from '../typings'
 
 const useWallet = (): [string, string | undefined, number, FILTransaction[] | [], (address: string|undefined) => void, FILTransaction | undefined, () => void] => {
-  const datt = Date.now()
   const [stationAddress, setStationAddress] = useState<string>('')
   const [destinationFilAddress, setDestinationFilAddress] = useState<string | undefined>()
   const [walletBalance, setWalletBalance] = useState<number>(0)
