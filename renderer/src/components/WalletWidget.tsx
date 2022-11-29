@@ -9,18 +9,18 @@ interface WalletWidgetProps {
 }
 
 const WalletWidget: FC<WalletWidgetProps> = ({ onClick }) => {
-  const [,, balance,,, latestTransaction, dismissLatestTransaction] = useWallet()
+  const { walletBalance, currentTransaction, dismissCurrentTransaction } = useWallet()
 
   return (
-    <div className="cursor-pointer" onClick={() => { onClick(); dismissLatestTransaction() }}>
+    <div className="cursor-pointer" onClick={() => { onClick(); dismissCurrentTransaction() }}>
       <div className='flex items-center '>
         <WalletIcon />
-        <span className="text-right mx-3" title="wallet"><span className='font-bold'>{balance.toLocaleString(undefined, { minimumFractionDigits: 3 }) || 0 }</span> FIL</span>
+        <span className="text-right mx-3" title="wallet"><span className='font-bold'>{walletBalance.toLocaleString(undefined, { minimumFractionDigits: 3 }) || 0 }</span> FIL</span>
         <button type="button" className="cursor-pointer" title="logout">
           <span className="text-primary underline underline-offset-8">Open Wallet</span>
         </button>
       </div>
-      { latestTransaction && <WalletTransactoinStatusWidget currentTransaction={latestTransaction} renderBackground={true} /> }
+      { currentTransaction && <WalletTransactoinStatusWidget currentTransaction={currentTransaction} renderBackground={true} /> }
     </div>
   )
 }

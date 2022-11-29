@@ -7,7 +7,7 @@ import WalletWidget from '../components/WalletWidget'
 import useStationActivity from '../hooks/StationActivity'
 
 const Dashboard = (): JSX.Element => {
-  const [totalJobs, totalEarnings, activities] = useStationActivity()
+  const { totalJobs, totalEarnings, activities } = useStationActivity()
   const [walletCurtainIsOpen, setWalletCurtainIsOpen] = useState<boolean>(false)
   const toggleCurtain = () => setWalletCurtainIsOpen(!walletCurtainIsOpen)
 

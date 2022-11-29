@@ -15,10 +15,10 @@ interface PropsWallet {
 const WalletModule: FC<PropsWallet> = ({ isOpen = false }) => {
   const [editMode, setEditMode] = useState<boolean>(false)
   const [trasnferMode, setTransferMode] = useState<boolean>(false)
-  const [stationAddress, destinationAddress, walletBalance, allTransactions, setDestinationAddress, latestTransaction, dismissLatestTransaction] = useWallet()
+  const { stationAddress, destinationFilAddress, walletBalance, walletTransactions, editDestinationAddress, currentTransaction, dismissCurrentTransaction } = useWallet()
 
   useEffect(() => {
-    dismissLatestTransaction()
+    dismissCurrentTransaction()
     reset()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
@@ -39,13 +39,51 @@ const WalletModule: FC<PropsWallet> = ({ isOpen = false }) => {
   }
 
   const saveAddress = async (address: string | undefined) => {
-    setDestinationAddress(address)
+    editDestinationAddress(address)
     setEditMode(false)
   }
 
   const transferAllFunds = async () => {
     await trasnferAllFundsToDestinationWallet()
     setTransferMode(false)
+  }
+
+  const renderAddress = () => {
+    if (editMode || !destinationFilAddress) {
+      return (<div className='w-full' onClick={() => (setEditMode(true))}>
+        <FilAddressForm
+          destinationAddress={destinationFilAddress}
+          saveDestinationAddress={saveAddress}
+          editMode={editMode} />
+      </div>)
+    }
+    return (
+      <div className="w-full flex flex-col z-0 items-start mb-[31px]" onClick={() => { setTransferMode(false) }}>
+        <span className="text-white opacity-80 font-body text-body-3xs uppercase">Your FIL Address</span>
+        <div className="relative mr-2 flex">
+          <p className="w-fit max-w-[460px] text-header-3xs font-body text-white mt-3">{destinationFilAddress}</p>
+          {!trasnferMode &&
+            <button className='flex flex-row items-end mx-3 cursor-pointer group' tabIndex={1} onClick={enableEditMode}>
+              <EditIcon className="btn-icon-primary mr-1" />
+              <span className='text-white hidden group-hover:block opacity-80 not-italic text-body-m font-body'>Edit</span>
+            </button>
+          }
+        </div>
+      </div>
+    )
+  }
+
+  const renderTransferButtons = () => {
+    if (!editMode || !destinationFilAddress) {
+      return (
+        <TransferFundsButtons
+          transferMode={trasnferMode}
+          balance={walletBalance}
+          enableTransferMode={enableTransferMode}
+          transferAllFunds={transferAllFunds}
+          disabled={!destinationFilAddress} />
+      )
+    }
   }
 
   return (
@@ -57,26 +95,7 @@ const WalletModule: FC<PropsWallet> = ({ isOpen = false }) => {
       <div className='h-60 bg-primary bg-no-repeat bg-center' style={{ backgroundImage: `url(${HeaderBackgroundImage})` }}>
         <div className="py-6 px-6 reset">
           <div className="flex flex-row justify-between align-baseline">
-            {editMode || !destinationAddress
-              ? <div className='w-full' onClick={() => (setEditMode(true))}>
-                <FilAddressForm
-                  destinationAddress={destinationAddress}
-                  saveDestinationAddress={saveAddress}
-                  editMode={editMode}/>
-                </div>
-              : <div className="w-full flex flex-col z-0 items-start mb-[31px]" onClick={() => { setTransferMode(false) }}>
-                  <span className="text-white opacity-80 font-body text-body-3xs uppercase">Your FIL Address</span>
-                  <div className="relative mr-2 flex">
-                    <p className="w-fit max-w-[460px] text-header-3xs font-body text-white mt-3">{destinationAddress}</p>
-                    {!trasnferMode &&
-                      <button className='flex flex-row items-end mx-3 cursor-pointer group' tabIndex={1} onClick={enableEditMode}>
-                        <EditIcon className="btn-icon-primary mr-1" />
-                        <span className='text-white hidden group-hover:block opacity-80 not-italic text-body-m font-body'>Edit</span>
-                      </button>
-                    }
-                  </div>
-              </div>
-            }
+            { renderAddress() }
           </div>
           <div className="flex flex-row justify-between align-baseline pt-6" onClick={() => { setEditMode(false) }}>
             <div>
@@ -85,19 +104,12 @@ const WalletModule: FC<PropsWallet> = ({ isOpen = false }) => {
                 {walletBalance.toLocaleString(undefined, { minimumFractionDigits: 3 })}<span className="text-header-3xs ml-3">FIL</span>
               </p>
             </div>
-            {(!editMode || !destinationAddress) &&
-              <TransferFundsButtons
-                transferMode={trasnferMode}
-                balance={walletBalance}
-                enableTransferMode={enableTransferMode}
-                transferAllFunds={transferAllFunds}
-                disabled={!destinationAddress} />
-            }
+            { renderTransferButtons() }
           </div>
         </div>
       </div>
       <div className="pb-6">
-        <WalletTransactionsHistory allTransactions={allTransactions} latestTransaction={latestTransaction} />
+        <WalletTransactionsHistory allTransactions={walletTransactions} latestTransaction={currentTransaction} />
       </div>
     </div>
   )

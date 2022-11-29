@@ -8,14 +8,24 @@ import {
 } from '../lib/station-config'
 import { FILTransaction } from '../typings'
 
-const useWallet = (): [string, string | undefined, number, FILTransaction[] | [], (address: string|undefined) => void, FILTransaction | undefined, () => void] => {
+interface Wallet {
+  stationAddress: string,
+  destinationFilAddress: string | undefined,
+  walletBalance: number,
+  walletTransactions: FILTransaction[] | [],
+  editDestinationAddress: (address: string|undefined) => void,
+  currentTransaction: FILTransaction | undefined,
+  dismissCurrentTransaction: () => void
+}
+
+const useWallet = (): Wallet => {
   const [stationAddress, setStationAddress] = useState<string>('')
   const [destinationFilAddress, setDestinationFilAddress] = useState<string | undefined>()
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const [walletTransactions, setWalletTransactions] = useState<FILTransaction[]>([])
   const [currentTransaction, setCurrentTransaction] = useState<FILTransaction | undefined>()
 
-  const setDestinationAddress = async (address: string | undefined) => {
+  const editDestinationAddress = async (address: string | undefined) => {
     await setDestinationWalletAddress(address)
     setDestinationFilAddress(address)
   }
@@ -30,12 +40,30 @@ const useWallet = (): [string, string | undefined, number, FILTransaction[] | []
   useEffect(() => {
     const loadStoredInfo = async () => {
       setDestinationFilAddress(await getDestinationWalletAddress())
+    }
+    loadStoredInfo()
+  }, [destinationFilAddress])
+
+  useEffect(() => {
+    const loadStoredInfo = async () => {
       setStationAddress(await getStationWalletAddress())
+    }
+    loadStoredInfo()
+  }, [stationAddress])
+
+  useEffect(() => {
+    const loadStoredInfo = async () => {
       setWalletBalance(await getStationWalletBalance())
+    }
+    loadStoredInfo()
+  }, [])
+
+  useEffect(() => {
+    const loadStoredInfo = async () => {
       setWalletTransactions(await getStationWalletTransactionsHistory())
     }
     loadStoredInfo()
-  }, [stationAddress, destinationFilAddress])
+  }, [])
 
   useEffect(() => {
     const updateWalletTransactionsArray = (transactions: FILTransaction[]) => {
@@ -52,14 +80,19 @@ const useWallet = (): [string, string | undefined, number, FILTransaction[] | []
     }
 
     const unsubscribeOnTransactionUpdate = window.electron.stationEvents.onTransactionUpdate(updateWalletTransactionsArray)
-    const unsubscribeOnBalanceUpdate = window.electron.stationEvents.onBalanceUpdate(setWalletBalance)
     return () => {
       unsubscribeOnTransactionUpdate()
+    }
+  }, [currentTransaction])
+
+  useEffect(() => {
+    const unsubscribeOnBalanceUpdate = window.electron.stationEvents.onBalanceUpdate(setWalletBalance)
+    return () => {
       unsubscribeOnBalanceUpdate()
     }
-  }, [currentTransaction, walletBalance])
+  }, [walletBalance])
 
-  return [stationAddress, destinationFilAddress, walletBalance, walletTransactions, setDestinationAddress, currentTransaction, dismissCurrentTransaction]
+  return { stationAddress, destinationFilAddress, walletBalance, walletTransactions, editDestinationAddress, currentTransaction, dismissCurrentTransaction }
 }
 
 export default useWallet
