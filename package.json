@@ -42,7 +42,7 @@
     "@glif/filecoin-address": "^2.0.35",
     "@influxdata/influxdb-client": "^1.33.1",
     "@sentry/node": "^7.37.0",
-    "@sentry/react": "^7.36.0",
+    "@sentry/react": "^7.37.1",
     "@sentry/tracing": "^7.37.0",
     "dayjs": "^1.11.7",
     "electron-log": "^4.4.7",
